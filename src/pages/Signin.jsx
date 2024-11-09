@@ -28,7 +28,7 @@ export const Signin = () => {
         }
       }
     } catch (error) {
-      console.error("Sign-in error:", error);
+      console.error("Sign-in error:", error.response.data.error);
     } finally {
       setLoading(false); // Set loading to false when the sign-in process ends
     }
