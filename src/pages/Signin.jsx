@@ -6,21 +6,28 @@ import { SubHeading } from "../components/SubHeading"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
+
 export const Signin = () => {
 
-
+ 
   const [username, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [errmsg, setErrmsg] = useState("");
   const navigate = useNavigate();
-
+ 
   const handleClick = async () => {
     setLoading(true); // Set loading to true when the sign-in process starts
     try {
       const response = await axios.post("https://paytm-backend-0jb0.onrender.com/api/v1/user/signin", { username, password });
+       
+        
+         
       if (response.status === 200) {
+         console.log(response.data);
+         localStorage.setItem("name", response.data.firstname);
+          localStorage.setItem("id", response.data.id);
         const token = localStorage.getItem("token");
         if (token) {
           localStorage.removeItem("token");

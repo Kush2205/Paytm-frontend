@@ -1,7 +1,10 @@
 import { useSearchParams } from 'react-router-dom';
 import axios from "axios";
 import { useState } from 'react';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import QRCode from "react-qr-code";
+import QrScanner from "react-qr-scanner";
+
 export const SendMoney = () => {
     const [searchParams] = useSearchParams();
     const id = searchParams.get("id");
@@ -97,3 +100,85 @@ export const SendMoney = () => {
       </div>
     </div>
 }
+
+export const Appbar = () => {
+  const [showQRPopup, setShowQRPopup] = useState(false);
+  const [scannedData, setScannedData] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/signin");
+  };
+
+  const handleQRClick = () => {
+    setShowQRPopup(true);
+  };
+
+  const handleQRClose = () => {
+    setShowQRPopup(false);
+  };
+
+  const handleScan = (data) => {
+    if (data) {
+      setScannedData(data.text);
+      navigate(`/send?userId=${data.text}`);
+    }
+  };
+
+  const handleError = (err) => {
+    console.error(err);
+  };
+
+  return (
+    <div className="shadow h-14 flex justify-between">
+      <div className="flex flex-col justify-center h-full ml-4">
+        PayTM App
+      </div>
+      <div className="flex items-center">
+        <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mr-2">
+          <div className="flex flex-col justify-center h-full text-xl">
+            U
+          </div>
+        </div>
+        <button
+          onClick={handleQRClick}
+          className="bg-blue-500 text-white px-4 py-2 mx-2 rounded-lg"
+        >
+          QR Code
+        </button>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 mx-2 rounded-lg"
+        >
+          Logout
+        </button>
+      </div>
+      {showQRPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Your QR Code</h2>
+              <button onClick={handleQRClose} className="text-red-500">Close</button>
+            </div>
+            <QRCode value="YourUserId" /> {/* Replace "YourUserId" with the actual user ID */}
+            <div className="mt-4">
+              <h2 className="text-xl font-bold">Scan QR Code</h2>
+              <QrScanner
+                delay={300}
+                onError={handleError}
+                onScan={handleScan}
+                style={{ width: "100%" }}
+              />
+              {scannedData && (
+                <div className="mt-2">
+                  <p>Scanned Data: {scannedData}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

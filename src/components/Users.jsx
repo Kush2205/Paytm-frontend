@@ -14,6 +14,7 @@ export const Users = () => {
       try {
         const response = await axios.get("https://paytm-backend-0jb0.onrender.com/api/v1/user/bulk?filter=" + filter);
         setUsers(response.data.user);
+        console.log(response.data.user);
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -43,9 +44,11 @@ export const Users = () => {
         </div>
       ) : (
         <div>
-          {users.map((user, index) => (
+         {
+          users.filter((user) => user.id !== localStorage.getItem("id")).map((user, index) => (
             <User key={index} user={user} />
-          ))}
+          ))
+         }
         </div>
       )}
     </>
