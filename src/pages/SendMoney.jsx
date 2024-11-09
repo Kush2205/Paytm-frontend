@@ -7,7 +7,39 @@ export const SendMoney = () => {
     const id = searchParams.get("id");
     const name = searchParams.get("name");
     const [amount, setAmount] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false)
+    const [error, setError] = useState();
     const navigate = useNavigate();
+  
+    const handleTransfer = async () => {
+        if (amount <= 0) {
+          setError("Amount should be greater than 0");
+          return;
+        }
+        setLoading(true); // Set loading to true when the transaction starts
+        setError(""); // Clear any previous error messages
+        setSuccess(false); // Clear any previous success messages
+        try {
+          await axios.post("https://paytm-backend-0jb0.onrender.com/api/v1/account/transfer", {
+            to: id,
+            amount
+          }, {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token")
+            }
+          });
+          setSuccess(true); // Set success to true when the transaction is successful
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 2000); // Redirect to dashboard after 2 seconds
+        } catch (e) {
+          console.error("Transfer error:", e);
+          setError("Transaction failed: " + e.response.data.error); // Set error message
+        } finally {
+          setLoading(false); // Set loading to false when the transaction ends
+        }
+      };
     return <div class="flex justify-center h-screen bg-gray-100">
         <div className="h-full flex flex-col justify-center">
             <div
@@ -41,19 +73,24 @@ export const SendMoney = () => {
                         placeholder="Enter amount"
                     />
                     </div>
-                    <button onClick={async () => {
-                       await axios.post("https://paytm-backend-0jb0.onrender.com/api/v1/account/transfer", {
-                            to: id,
-                            amount
-                        }, {
-                            headers: {
-                                Authorization: "Bearer " + localStorage.getItem("token")
-                            }
-                        })
-                        navigate("/dashboard");
-                    }} class="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
+                    <button onClick={handleTransfer} class="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
                         Initiate Transfer
                     </button>
+                    {loading && (
+            <div className="flex justify-center mt-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          )}
+          {error && (
+            <div className="text-red-500 mt-4">
+              {error}
+            </div>
+          )}
+        {success && (
+                <div className="text-green-500 mt-4">
+                  Transaction Successful!
+                </div>
+              )}
                 </div>
                 </div>
         </div>
