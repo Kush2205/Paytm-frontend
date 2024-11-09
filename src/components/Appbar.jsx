@@ -77,15 +77,11 @@ export const Appbar = () => {
                     delay={300}
                     onResult={handleScan}
                     style={{ width: "100%" }}
-                    constraints={{ video: { facingMode: "environment" } }}
+                    constraints={{facingMode: "environment"}}
                   />
                 )}
               </div>
-              {scannedData && (
-                <div className="mt-2 text-center text-green-500">
-                  Scanned Data: {scannedData}
-                </div>
-              )}
+              
             </div>
           </div>
         </div>
