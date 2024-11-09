@@ -12,6 +12,8 @@ export const Signin = () => {
   const [username, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [errmsg, setErrmsg] = useState("");
   const navigate = useNavigate();
 
   const handleClick = async () => {
@@ -27,8 +29,9 @@ export const Signin = () => {
           navigate("/dashboard");
         }
       }
-    } catch (error) {
-      console.error("Sign-in error:", error.response.data.error);
+    } catch (e) {
+      setError(true);
+      setErrmsg(e.response.data.error);
     } finally {
       setLoading(false); // Set loading to false when the sign-in process ends
     }
@@ -48,6 +51,11 @@ export const Signin = () => {
           {loading && (
             <div className="flex justify-center mt-4">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          )}
+          {error && (
+            <div className="text-red-500 mt-4">
+              {errmsg}
             </div>
           )}
           <BottomWarning label={"Don't have an account?"} buttonText={"Sign up"} to={"/signup"} />
