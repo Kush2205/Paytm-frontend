@@ -26,16 +26,14 @@ export const Appbar = () => {
     setIsCameraActive(false);
   };
 
-  const handleScan = (result, error) => {
-    if (!!result) {
-      setScannedData(result?.text);
-      navigate(`/send?userId=${result?.text}`);
+  const handleScan = (result) => {
+    if (result) {
+       const userdata = JSON.parse(result.text);
+      navigate("/send?id="+userdata.id+"&name="+userdata.name);}
     }
 
-    if (!!error) {
-      console.error(error);
-    }
-  };
+  
+ 
 
   const qrdata = JSON.stringify({ id: localStorage.getItem("id") , name: localStorage.getItem("name") });
 
@@ -93,4 +91,4 @@ export const Appbar = () => {
       )}
     </div>
   );
-};
+}
