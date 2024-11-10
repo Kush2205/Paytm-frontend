@@ -13,12 +13,13 @@ export const Signup = () => {
   const [lastname, setLastname] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("Sign Up Error :"); // State to track error message
+  const [error, setError] = useState(false);
+  const [ermsg , setErmsg] = useState("Signup Error :");
   const navigate = useNavigate();
 
   const handleSignup = async () => {
     setLoading(true); // Set loading to true when the sign-up process starts
-    setError(""); // Clear any previous error messages
+    
     try {
       const response = await axios.post("https://paytm-backend-0jb0.onrender.com/api/v1/user/signup", {
         username,
@@ -30,9 +31,9 @@ export const Signup = () => {
       localStorage.setItem("token", response.data.token);
       navigate("/dashboard");
     } catch (e) {
-      
+      setError(true);
       console.error("Sign-up error:", e);
-      setError(error+e.response.data.error); // Set error message
+      setErmsg(ermsg+e.response.data.error); 
     } finally {
       setLoading(false); // Set loading to false when the sign-up process ends
     }
@@ -58,7 +59,7 @@ export const Signup = () => {
           )}
           {error && (
             <div className="text-red-500 mt-4">
-              {error}
+              {ermsg}
             </div>
           )}
           <BottomWarning label={"Already have an account?"} buttonText={"Sign in"} to={"/signin"} />
