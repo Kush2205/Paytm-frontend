@@ -45,7 +45,7 @@ export const Users = () => {
       ) : (
         <div>
          {
-          users.filter((user) => user.id !== localStorage.getItem("id")).map((user, index) => (
+          users.filter((user) => user.id!== localStorage.getItem("id")).map((user, index) => (
             <User key={index} user={user} />
           ))
          }
